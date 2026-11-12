@@ -4,6 +4,8 @@ Assistente de atendimento para um app de delivery fictício (o **Rango**), const
 
 O foco do projeto é ser **confiável e mensurável**: as regras de negócio ficam no código (e não no prompt), e há avaliações automáticas tanto da busca (RAG) quanto do agente de ponta a ponta.
 
+> 🔗 **Demo ao vivo:** [agente-delivery-aliss.streamlit.app](https://agente-delivery-aliss.streamlit.app/). Experimente "Me mostra o pedido 1008" (de outro cliente) ou "No pedido 1002 não veio o tiramisù", e abra "Por dentro do agente" para ver as ferramentas chamadas.
+
 ## O que ele faz
 
 | Cliente pergunta | O agente |
