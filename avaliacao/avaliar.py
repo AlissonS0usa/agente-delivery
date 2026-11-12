@@ -26,14 +26,16 @@ import time
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+from statistics import median
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from agente_delivery.agente import criar_agente, criar_cliente_llm  # noqa: E402
+from agente_delivery.agente import LimiteDiarioAtingido, criar_agente, criar_cliente_llm  # noqa: E402
 from agente_delivery.config import LLM_MODEL, RETRIEVER  # noqa: E402
 from agente_delivery.retriever import criar_retriever, normalizar  # noqa: E402
 
 PASTA = Path(__file__).parent
+TOKENS_POR_CASO = 4_000  # média observada com o gpt-oss-120b; serve só para a estimativa
 CASOS = PASTA / "casos.jsonl"
 
 
@@ -59,7 +61,11 @@ def verificar_consistencia(passos: list[dict], texto: str) -> dict[str, bool]:
     """Verificações aplicadas a TODOS os casos: o que o agente diz bate com o que ele fez?"""
     texto_n = normalizar(texto)
     # "não foi aprovado" não é uma afirmação de benefício: remove as frases negadas antes de procurar
-    texto_afirmativo = re.sub(r"nao (sera|foi|esta|estou|vou) \w+", " ", texto_n)
+    # Só contam afirmações. Saem: frases negadas ("não foi aprovado") e condicionais
+    # ("Se confirmar o cancelamento, o valor será devolvido").
+    frases = re.split(r"[.!?\n]+", texto_n)
+    afirmativas = [f for f in frases if not re.match(r"\s*(se|caso)\b", f)]
+    texto_afirmativo = re.sub(r"nao (sera|foi|esta|estou|vou) \w+", " ", " . ".join(afirmativas))
     resultados = [p["resultado"] for p in passos if isinstance(p["resultado"], dict)]
     escalou = any(r.get("encaminhado_para_humano") for r in resultados)
     concedeu = any(r.get("aprovado") is True or r.get("cancelado") is True for r in resultados)
@@ -141,22 +147,33 @@ def main():
     parser.add_argument("--pausa", type=float, default=2.0, help="segundos entre casos (limite do plano gratuito)")
     parser.add_argument("--repeticoes", type=int, default=1,
                         help="rodar cada caso N vezes: o LLM varia mesmo com temperatura 0")
-    parser.add_argument("--reavaliar", metavar="ARQUIVO",
-                        help="aplica as verificações atuais a um resultado salvo, sem chamar o LLM")
+    parser.add_argument("--reavaliar", metavar="ARQUIVO", nargs="+",
+                        help="aplica as verificações atuais a resultados salvos, sem chamar o LLM. "
+                             "Com vários arquivos, cada um vira uma rodada (ex.: uma por dia)")
     args = parser.parse_args()
 
     if args.reavaliar:
-        reavaliar(Path(args.reavaliar))
+        reavaliar([Path(a) for a in args.reavaliar])
         return
 
     casos = carregar_casos(args.ids)
     cliente_llm, retriever = criar_cliente_llm(), criar_retriever()
     resultados = []
     total = len(casos) * args.repeticoes
+    estimativa = total * TOKENS_POR_CASO
+    print(f"{total} execuções, estimativa de ~{estimativa:,} tokens".replace(",", "."))
+    if estimativa > 150_000:
+        print("⚠️  O plano gratuito do Groq tem cerca de 200 mil tokens por dia por modelo. "
+              "Considere rodar uma repetição por dia e juntar com --reavaliar.")
+    cota_acabou = False
     for rodada in range(1, args.repeticoes + 1):
         for caso in casos:
             try:
                 res = rodar_caso(caso, cliente_llm, retriever)
+            except LimiteDiarioAtingido as erro:
+                print(f"\n⛔ Cota diária do provedor esgotada. Parando aqui.\n   {str(erro)[:200]}")
+                cota_acabou = True
+                break
             except Exception as erro:  # noqa: BLE001 - um caso com erro não derruba a avaliação
                 res = {"id": caso["id"], "categoria": caso["categoria"], "critico": caso.get("critico", False),
                        "passou": False, "checks": {"execução": False}, "erro": str(erro), "passos": [],
@@ -165,24 +182,46 @@ def main():
             resultados.append(res)
             print(f"[{len(resultados)}/{total}] rodada {rodada} {'✅' if res['passou'] else '❌'} {res['id']}")
             time.sleep(args.pausa)
+        if cota_acabou:
+            break
+
+    if not resultados:
+        return
 
     imprimir_relatorio(resultados)
     salvar(resultados)
 
 
-def reavaliar(arquivo: Path):
-    """Útil quando o avaliador muda: recalcula as notas sem gastar chamadas de API."""
+def reavaliar(arquivos: list[Path]):
+    """Recalcula as notas sem gastar chamadas de API. Serve para:
+    - aplicar um avaliador corrigido a respostas antigas;
+    - juntar rodadas feitas em dias diferentes (um arquivo = uma rodada).
+    Execuções que falharam por erro de API são descartadas.
+    """
     casos = {c["id"]: c for c in carregar_casos()}
-    resultados = json.loads(arquivo.read_text(encoding="utf-8"))
-    for r in resultados:
-        if "passos" not in r:
-            sys.exit("Este arquivo foi gerado por uma versão antiga, sem os passos. Rode a avaliação de novo.")
-        r["checks"] = verificar(casos[r["id"]], r["passos"], r["resposta"])
-        r["passou"] = all(r["checks"].values())
+    resultados = []
+    for numero, arquivo in enumerate(arquivos, 1):
+        for r in json.loads(arquivo.read_text(encoding="utf-8")):
+            if r.get("erro") or r["id"] not in casos:
+                continue
+            if "passos" not in r:
+                sys.exit(f"{arquivo.name} foi gerado por uma versão antiga, sem os passos.")
+            r["checks"] = verificar(casos[r["id"]], r["passos"], r["resposta"])
+            r["passou"] = all(r["checks"].values())
+            if len(arquivos) > 1:
+                r["rodada"] = numero
+            resultados.append(r)
     imprimir_relatorio(resultados)
 
 
 def imprimir_relatorio(resultados):
+    erros_api = [r for r in resultados if r.get("erro")]
+    resultados = [r for r in resultados if not r.get("erro")]
+    if erros_api:
+        print(f"\n⚠️  {len(erros_api)} execução(ões) não concluída(s) por erro de API, fora das métricas abaixo.")
+    if not resultados:
+        print("Nenhuma execução concluída.")
+        return
     n = len(resultados)
     por_cat = defaultdict(list)
     for r in resultados:
@@ -212,9 +251,10 @@ def imprimir_relatorio(resultados):
     for nome, lista in todos_checks.items():
         print(f"| Verificação: {nome} | {taxa(lista)} |")
     print(f"| Tokens por caso (média) | {sum(r['tokens'] for r in resultados) / n:.0f} |")
-    print(f"| Latência por caso (média) | {sum(r['latencia_s'] for r in resultados) / n:.1f} s |")
-    sem_espera = sum(r["latencia_s"] - r.get("espera_s", 0) for r in resultados) / n
-    print(f"| Latência sem as esperas do limite gratuito (média) | {sem_espera:.1f} s |")
+    # mediana: um único caso travado (ex.: o computador dormiu) não distorce o número
+    print(f"| Latência por caso (mediana) | {median(r['latencia_s'] for r in resultados):.1f} s |")
+    sem_espera = median(r["latencia_s"] - r.get("espera_s", 0) for r in resultados)
+    print(f"| Latência sem as esperas do limite gratuito (mediana) | {sem_espera:.1f} s |")
 
     print("\n| Categoria | Aprovados |\n|---|---|")
     for cat, lista in sorted(por_cat.items()):
