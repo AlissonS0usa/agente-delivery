@@ -142,6 +142,10 @@ class Agente:
         return Resposta(texto, passos, tokens, round(time.perf_counter() - inicio, 2), sum(esperas))
 
 
+class LimiteDiarioAtingido(RuntimeError):
+    """A cota diária do provedor acabou: não adianta esperar segundos, só horas."""
+
+
 def _chamar_com_retentativa(funcao, tentativas: int = 5, esperas: list | None = None):
     """Tenta de novo em dois casos recuperáveis:
     - 429: limite por minuto do plano gratuito -> espera cada vez mais e repete;
@@ -153,6 +157,8 @@ def _chamar_com_retentativa(funcao, tentativas: int = 5, esperas: list | None = 
             return funcao()
         except Exception as erro:  # noqa: BLE001
             status = getattr(erro, "status_code", None)
+            if status == 429 and "per day" in str(erro).lower():
+                raise LimiteDiarioAtingido(str(erro)) from erro
             validacao_ferramenta = status == 400 and "tool call validation" in str(erro).lower()
             if tentativa == tentativas - 1 or not (status == 429 or validacao_ferramenta):
                 raise
