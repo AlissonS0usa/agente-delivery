@@ -1,0 +1,20 @@
+[project]
+name = "agente-delivery"
+version = "0.1.0"
+description = "Agente de atendimento para delivery com LLM, tool calling, RAG e avaliação automatizada"
+requires-python = ">=3.10"
+
+# O código fica em src/ e os scripts de avaliação em avaliacao/.
+# Estas duas seções dizem onde procurar os módulos:
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "avaliacao"]
+testpaths = ["tests"]
+# Pastas temporárias dos testes dentro do projeto (e não na pasta Temp do sistema):
+# evita "PermissionError: Acesso negado" no Windows quando a pasta Temp do pytest fica bloqueada.
+addopts = "--basetemp=.pytest_tmp"
+
+# Pylance (VS Code) e Pyright: sem isto, o editor marca "from avaliar import ..."
+# como erro, porque não executa o sys.path.insert do conftest.py.
+[tool.pyright]
+extraPaths = ["src", "avaliacao"]
