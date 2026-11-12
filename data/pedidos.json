@@ -1,0 +1,44 @@
+{
+  "agora": "2026-11-10T20:00:00-03:00",
+  "clientes": [
+    {"id": "c001", "nome": "Ana"},
+    {"id": "c002", "nome": "Bruno"}
+  ],
+  "pedidos": [
+    {"id": "1001", "cliente_id": "c001", "restaurante_id": "r3", "itens": [{"prato_id": "p301", "qtd": 1}, {"prato_id": "p303", "qtd": 1}],
+     "status": "a_caminho", "pagamento": "cartao_credito",
+     "criado_em": "2026-11-10T19:10:00-03:00", "previsao_entrega": "2026-11-10T19:50:00-03:00", "entregue_em": null},
+
+    {"id": "1002", "cliente_id": "c001", "restaurante_id": "r1", "itens": [{"prato_id": "p101", "qtd": 1}, {"prato_id": "p104", "qtd": 1}],
+     "status": "entregue", "pagamento": "pix",
+     "criado_em": "2026-11-10T12:10:00-03:00", "previsao_entrega": "2026-11-10T12:50:00-03:00", "entregue_em": "2026-11-10T13:05:00-03:00"},
+
+    {"id": "1003", "cliente_id": "c001", "restaurante_id": "r2", "itens": [{"prato_id": "p201", "qtd": 1}],
+     "status": "entregue", "pagamento": "cartao_credito",
+     "criado_em": "2026-11-08T20:15:00-03:00", "previsao_entrega": "2026-11-08T21:00:00-03:00", "entregue_em": "2026-11-08T20:58:00-03:00"},
+
+    {"id": "1004", "cliente_id": "c001", "restaurante_id": "r4", "itens": [{"prato_id": "p401", "qtd": 1}, {"prato_id": "p404", "qtd": 1}],
+     "status": "confirmado", "pagamento": "vale_refeicao",
+     "criado_em": "2026-11-10T19:55:00-03:00", "previsao_entrega": "2026-11-10T20:40:00-03:00", "entregue_em": null},
+
+    {"id": "1005", "cliente_id": "c001", "restaurante_id": "r2", "itens": [{"prato_id": "p202", "qtd": 2}],
+     "status": "preparando", "pagamento": "cartao_credito",
+     "criado_em": "2026-11-10T19:40:00-03:00", "previsao_entrega": "2026-11-10T20:25:00-03:00", "entregue_em": null},
+
+    {"id": "1006", "cliente_id": "c001", "restaurante_id": "r3", "itens": [{"prato_id": "p302", "qtd": 1}, {"prato_id": "p304", "qtd": 1}],
+     "status": "a_caminho", "pagamento": "pix",
+     "criado_em": "2026-11-10T18:30:00-03:00", "previsao_entrega": "2026-11-10T19:10:00-03:00", "entregue_em": null},
+
+    {"id": "1007", "cliente_id": "c001", "restaurante_id": "r1", "itens": [{"prato_id": "p102", "qtd": 1}],
+     "status": "cancelado", "pagamento": "cartao_credito",
+     "criado_em": "2026-11-09T12:00:00-03:00", "previsao_entrega": "2026-11-09T12:45:00-03:00", "entregue_em": null},
+
+    {"id": "1008", "cliente_id": "c002", "restaurante_id": "r2", "itens": [{"prato_id": "p201", "qtd": 1}],
+     "status": "entregue", "pagamento": "cartao_credito",
+     "criado_em": "2026-11-10T18:00:00-03:00", "previsao_entrega": "2026-11-10T18:45:00-03:00", "entregue_em": "2026-11-10T18:40:00-03:00"},
+
+    {"id": "1009", "cliente_id": "c001", "restaurante_id": "r4", "itens": [{"prato_id": "p403", "qtd": 1}, {"prato_id": "p402", "qtd": 1}],
+     "status": "entregue", "pagamento": "cartao_debito",
+     "criado_em": "2026-11-10T18:20:00-03:00", "previsao_entrega": "2026-11-10T19:00:00-03:00", "entregue_em": "2026-11-10T19:45:00-03:00"}
+  ]
+}

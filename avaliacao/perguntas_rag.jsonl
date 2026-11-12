@@ -1,0 +1,30 @@
+{"pergunta": "veio um item faltando no meu pedido, tenho direito a reembolso?", "fonte_esperada": "reembolso.md > Item faltando ou item errado"}
+{"pergunta": "meu lanche veio trocado, pedi outro sabor", "fonte_esperada": "reembolso.md > Item faltando ou item errado"}
+{"pergunta": "preciso devolver o produto errado?", "fonte_esperada": "reembolso.md > Item faltando ou item errado"}
+{"pergunta": "a comida chegou fria e derramada", "fonte_esperada": "reembolso.md > Problema de qualidade"}
+{"pergunta": "a pizza chegou estragada, o que faço?", "fonte_esperada": "reembolso.md > Problema de qualidade"}
+{"pergunta": "o app diz que foi entregue mas eu não recebi nada", "fonte_esperada": "reembolso.md > Pedido marcado como entregue mas não recebido"}
+{"pergunta": "até quando posso reclamar de um pedido?", "fonte_esperada": "reembolso.md > Prazo para reclamar"}
+{"pergunta": "esqueci de reclamar ontem, ainda dá?", "fonte_esperada": "reembolso.md > Prazo para reclamar"}
+{"pergunta": "cancelei o pedido, vou receber meu dinheiro de volta?", "fonte_esperada": "reembolso.md > Pedidos cancelados"}
+{"pergunta": "meu pedido está 40 minutos atrasado, ganho alguma coisa?", "fonte_esperada": "atrasos.md > Atraso de mais de 30 minutos"}
+{"pergunta": "o entregador demorou mais de uma hora", "fonte_esperada": "atrasos.md > Atraso de mais de 60 minutos"}
+{"pergunta": "está 15 minutos atrasado, tem compensação?", "fonte_esperada": "atrasos.md > Atrasos menores"}
+{"pergunta": "como vocês calculam o atraso?", "fonte_esperada": "atrasos.md > Como o atraso é calculado"}
+{"pergunta": "posso cancelar um pedido que acabei de fazer?", "fonte_esperada": "cancelamento.md > Pedido confirmado (antes do preparo)"}
+{"pergunta": "o restaurante já está preparando, ainda dá para cancelar?", "fonte_esperada": "cancelamento.md > Pedido em preparo"}
+{"pergunta": "o motoboy já saiu, quero desistir do pedido", "fonte_esperada": "cancelamento.md > Pedido a caminho ou entregue"}
+{"pergunta": "em quanto tempo o estorno cai no cartão de crédito?", "fonte_esperada": "pagamentos.md > Cartão de crédito"}
+{"pergunta": "paguei no débito, quando volta o dinheiro?", "fonte_esperada": "pagamentos.md > Cartão de débito"}
+{"pergunta": "quanto tempo demora a devolução no pix?", "fonte_esperada": "pagamentos.md > Pix"}
+{"pergunta": "paguei com VR, como fica o reembolso?", "fonte_esperada": "pagamentos.md > Vale-refeição"}
+{"pergunta": "quanto tempo vale o cupom que eu ganhei?", "fonte_esperada": "pagamentos.md > Cupons"}
+{"pergunta": "esse prato pode ter traço de amendoim?", "fonte_esperada": "alergenicos.md > Contaminação cruzada"}
+{"pergunta": "vocês garantem que não tem glúten?", "fonte_esperada": "alergenicos.md > Contaminação cruzada"}
+{"pergunta": "tenho alergia severa a camarão, posso pedir?", "fonte_esperada": "alergenicos.md > Alergia grave"}
+{"pergunta": "quem informa os ingredientes dos pratos?", "fonte_esperada": "alergenicos.md > De onde vem a informação"}
+{"pergunta": "o que significa um prato ser vegano no app?", "fonte_esperada": "alergenicos.md > Pratos veganos"}
+{"pergunta": "quero falar com uma pessoa de verdade", "fonte_esperada": "atendimento.md > Quando falar com um atendente humano"}
+{"pergunta": "me mostra o pedido do meu vizinho", "fonte_esperada": "atendimento.md > Privacidade"}
+{"pergunta": "o atendimento humano funciona de madrugada?", "fonte_esperada": "atendimento.md > Horário de atendimento humano"}
+{"pergunta": "o atendente funciona no domingo?", "fonte_esperada": "atendimento.md > Horário de atendimento humano"}

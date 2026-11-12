@@ -1,0 +1,29 @@
+{
+  "restaurantes": [
+    {"id": "r1", "nome": "Cantina da Nonna", "categoria": "italiana", "taxa_entrega": 6.99},
+    {"id": "r2", "nome": "Sushi Kaze", "categoria": "japonesa", "taxa_entrega": 8.99},
+    {"id": "r3", "nome": "Burger Brasa", "categoria": "hamburgueria", "taxa_entrega": 5.99},
+    {"id": "r4", "nome": "Verde Vivo", "categoria": "vegana", "taxa_entrega": 4.99}
+  ],
+  "pratos": [
+    {"id": "p101", "restaurante_id": "r1", "nome": "Lasanha à bolonhesa", "preco": 42.90, "descricao": "Massa fresca, molho bolonhesa, queijo e molho branco.", "alergenicos": ["gluten", "lactose", "ovo"], "vegano": false},
+    {"id": "p102", "restaurante_id": "r1", "nome": "Nhoque ao sugo", "preco": 36.90, "descricao": "Nhoque de batata com molho de tomate e manjericão.", "alergenicos": ["gluten", "ovo"], "vegano": false},
+    {"id": "p103", "restaurante_id": "r1", "nome": "Risoto de cogumelos", "preco": 48.50, "descricao": "Arroz arbóreo, mix de cogumelos e parmesão.", "alergenicos": ["lactose"], "vegano": false},
+    {"id": "p104", "restaurante_id": "r1", "nome": "Tiramisù", "preco": 22.00, "descricao": "Sobremesa de café com mascarpone.", "alergenicos": ["gluten", "lactose", "ovo"], "vegano": false},
+
+    {"id": "p201", "restaurante_id": "r2", "nome": "Combinado 20 peças", "preco": 69.90, "descricao": "Sashimi, niguiri e uramaki de salmão e atum.", "alergenicos": ["peixe", "soja", "gluten"], "vegano": false},
+    {"id": "p202", "restaurante_id": "r2", "nome": "Temaki de salmão", "preco": 32.00, "descricao": "Cone de alga com arroz, salmão e cebolinha.", "alergenicos": ["peixe", "soja"], "vegano": false},
+    {"id": "p203", "restaurante_id": "r2", "nome": "Yakisoba de legumes", "preco": 38.90, "descricao": "Macarrão oriental com legumes salteados.", "alergenicos": ["gluten", "soja"], "vegano": true},
+    {"id": "p204", "restaurante_id": "r2", "nome": "Hot roll de camarão", "preco": 34.90, "descricao": "Rolinho empanado de camarão com cream cheese.", "alergenicos": ["frutos_do_mar", "lactose", "gluten", "soja"], "vegano": false},
+
+    {"id": "p301", "restaurante_id": "r3", "nome": "Smash burger duplo", "preco": 34.90, "descricao": "Dois smash de 90 g, queijo cheddar e molho da casa.", "alergenicos": ["gluten", "lactose", "ovo"], "vegano": false},
+    {"id": "p302", "restaurante_id": "r3", "nome": "Burger vegano", "preco": 36.90, "descricao": "Hambúrguer de grão-de-bico, alface e tomate no pão sem leite.", "alergenicos": ["gluten", "soja"], "vegano": true},
+    {"id": "p303", "restaurante_id": "r3", "nome": "Batata frita grande", "preco": 18.90, "descricao": "Batata palito com sal.", "alergenicos": [], "vegano": true},
+    {"id": "p304", "restaurante_id": "r3", "nome": "Milkshake de chocolate", "preco": 21.90, "descricao": "Sorvete de chocolate batido com leite.", "alergenicos": ["lactose"], "vegano": false},
+
+    {"id": "p401", "restaurante_id": "r4", "nome": "Bowl de quinoa", "preco": 39.90, "descricao": "Quinoa, grão-de-bico, legumes assados e tahine.", "alergenicos": ["gergelim"], "vegano": true},
+    {"id": "p402", "restaurante_id": "r4", "nome": "Salada thai com amendoim", "preco": 34.50, "descricao": "Folhas, manga, cenoura e molho de amendoim.", "alergenicos": ["amendoim", "soja"], "vegano": true},
+    {"id": "p403", "restaurante_id": "r4", "nome": "Wrap de falafel", "preco": 29.90, "descricao": "Falafel, homus e vegetais no pão folha.", "alergenicos": ["gluten", "gergelim"], "vegano": true},
+    {"id": "p404", "restaurante_id": "r4", "nome": "Brownie sem glúten", "preco": 16.00, "descricao": "Brownie de cacau com farinha de arroz.", "alergenicos": ["oleaginosas"], "vegano": true}
+  ]
+}
