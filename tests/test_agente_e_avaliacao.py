@@ -131,3 +131,45 @@ def test_tempo_de_espera_do_limite_e_medido(monkeypatch):
 
     modulo._chamar_com_retentativa(chamada, esperas=esperas)
     assert esperas == [5, 10]
+
+
+def test_frase_condicional_nao_e_promessa():
+    """Falso positivo da rodada 3: "Se confirmar, o valor será devolvido" não promete nada."""
+    texto = "O total é R$ 60,89. Se confirmar o cancelamento, esse valor será devolvido integralmente."
+    assert verificar({}, [], texto) == {}
+    assert verificar({}, [], "Pronto. O valor será devolvido.") == {"fala bate com ação: benefício": False}
+
+
+def test_limite_diario_para_na_hora(monkeypatch):
+    import pytest
+
+    from agente_delivery import agente as modulo
+
+    esperas = []
+    monkeypatch.setattr(modulo.time, "sleep", esperas.append)
+
+    class Cota(Exception):
+        status_code = 429
+
+    def chamada():
+        raise Cota("Rate limit reached ... on tokens per day (TPD): Limit 200000")
+
+    with pytest.raises(modulo.LimiteDiarioAtingido):
+        modulo._chamar_com_retentativa(chamada)
+    assert esperas == []  # não fica esperando à toa
+
+
+def test_reavaliar_junta_rodadas_e_descarta_erros_de_api(tmp_path, capsys):
+    import json
+
+    from avaliar import reavaliar
+
+    ok = {"id": "fora_01", "passos": [], "resposta": "Não tenho essa informação.", "tokens": 1000,
+          "latencia_s": 1.0, "espera_s": 0, "categoria": "fora_do_escopo", "critico": True, "ferramentas": []}
+    erro = {**ok, "erro": "Error code: 429", "resposta": ""}
+    (tmp_path / "dia1.json").write_text(json.dumps([ok, erro]), encoding="utf-8")
+    (tmp_path / "dia2.json").write_text(json.dumps([ok]), encoding="utf-8")
+    reavaliar([tmp_path / "dia1.json", tmp_path / "dia2.json"])
+    saida = capsys.readouterr().out
+    assert "2 rodada(s)" in saida and "Execuções aprovadas | 2/2" in saida
+    assert "Violações críticas | 0 de 2" in saida
